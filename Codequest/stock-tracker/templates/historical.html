@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historical Data - {{ ticker }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="tracker-container">
+        <header>
+            <h1>Historical Data for {{ ticker }}</h1>
+            <a href="{{ url_for('index') }}" class="back-btn">Back to Watchlist</a>
+        </header>
+
+        <section class="historical-data-section">
+            <table class="historical-data-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Open</th>
+                        <th>High</th>
+                        <th>Low</th>
+                        <th>Close</th>
+                        <th>Volume</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for day in historical_data %}
+                        <tr>
+                            <td>{{ day['date'] }}</td>
+                            <td>${{ day['open'] }}</td>
+                            <td>${{ day['high'] }}</td>
+                            <td>${{ day['low'] }}</td>
+                            <td>${{ day['close'] }}</td>
+                            <td>{{ day['volume'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
+</body>
+</html>

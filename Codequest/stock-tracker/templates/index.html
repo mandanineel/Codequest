@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="tracker-container">
+        <header>
+            <h1>Real-time Stock Price Tracker</h1>
+            <p>Welcome, {{ session['user'] }} | <a href="/logout" class="logout-btn">Logout</a></p>
+        </header>
+
+        <section class="watchlist-section">
+            <h2>Your Watchlist</h2>
+            <form action="/add" method="POST" class="add-ticker-form">
+                <input type="text" name="ticker" placeholder="Enter Stock Ticker" required>
+                <button type="submit" class="btn-add">Add to Watchlist</button>
+            </form>
+            
+            <div class="stock-list">
+                <ul>
+                    {% for ticker, price in stock_data.items() %}
+                        <li class="stock-item">
+                            <span>{{ ticker }}</span>: <span>${{ price }}</span>
+                            <a href="/remove/{{ ticker }}" class="remove-btn">Remove</a>
+                            <a href="historical/{{ ticker }}" class="historical-btn">View Historical Data</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+        
+        <section class="alert-section">
+            <h2>Set Price Alerts</h2>
+            <form action="/set_alert" method="POST" class="set-alert-form">
+                <div>
+                    <input type="text" name="ticker" placeholder="Enter Stock Ticker" required>
+                </div>
+                <div>
+                    <input type="number" step="0.01" name="alert_price" placeholder="Enter Price Threshold" required>
+                </div>
+                <button type="submit" class="btn-set-alert">Set Alert</button>
+            </form>
+        </section>
+        
+        <section class="alert-list-section">
+            <h2>Your Active Alerts</h2>
+            <ul>
+                {% for alert in alerts %}
+                    <li>{{ alert['ticker'] }} at ${{ alert['price'] }} 
+                        <a href="/remove_alert/{{ alert['ticker'] }}" class="remove-btn">Remove</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <!-- Flash Messages Section -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        
+    </div>
+</body>
+</html>
